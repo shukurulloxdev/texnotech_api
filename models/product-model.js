@@ -8,6 +8,7 @@ const productSchema = new Schema({
   price: { type: Number, required: true },
   top: { type: Boolean },
   discount: { type: Boolean },
+  active: { type: Boolean, default: true },
   percent: { type: Number },
   images: [{ type: String }],
 });
