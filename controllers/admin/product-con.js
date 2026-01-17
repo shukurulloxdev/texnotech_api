@@ -5,7 +5,7 @@ class ProductController {
     try {
       console.log(req.body);
       const product = await productModel.create(req.body);
-      return res.status(201).json(product);
+      return res.status(201).json({ status: 200 });
     } catch (err) {
       if (err.name === "ValidationError") {
         const errors = Object.values(err.errors).map((e) => e.message);
@@ -23,12 +23,37 @@ class ProductController {
       });
     }
   }
+  async AdminProducts(req, res) {
+    try {
+      const adminProducts = await productModel.find();
+
+      res.json({ products: adminProducts });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async topProducts(req, res) {
     try {
-      const topProducts = await productModel.find({ top: true });
-      res.json(topProducts);
-      console.log("Hamma top lar", topProducts);
+      const topProducts = await productModel.find({ top: true, active: true });
+      res.json({ products: topProducts });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async deleteProduct(req, res) {
+    try {
+      const { id } = req.params;
+
+      const deletedProduct = await productModel.findByIdAndDelete(id);
+
+      if (!deletedProduct) {
+        return res.json({
+          failure: "Mahsulot o'chirilmadi ❌, Hato yuz berdi!",
+        });
+      }
+      return res.json({ status: 200 });
     } catch (err) {
       console.log(err);
     }
