@@ -23,7 +23,8 @@ class ProductController {
       });
     }
   }
-  async AdminProducts(req, res) {
+
+  async adminProducts(req, res) {
     try {
       const adminProducts = await productModel.find();
 
@@ -37,6 +38,21 @@ class ProductController {
     try {
       const topProducts = await productModel.find({ top: true, active: true });
       res.json({ products: topProducts });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async updateProductActive(req, res) {
+    try {
+      const { id } = req.params;
+      const product = await productModel.findById(id);
+      if (!product) {
+        return;
+      }
+      product.active = !product.active;
+      await product.save();
+
+      return res.status(200).json({ product });
     } catch (err) {
       console.log(err);
     }
