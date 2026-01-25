@@ -28,7 +28,7 @@ class ProductController {
     try {
       const topProducts = await productModel.find({ top: true });
       res.json(topProducts);
-      console.log(topProducts);
+      console.log("Hamma top lar", topProducts);
     } catch (err) {
       console.log(err);
     }
