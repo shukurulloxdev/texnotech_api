@@ -1,6 +1,6 @@
-const productModel = require("../../models/product-model");
+const productModel = require("../models/product-model");
 
-class ProductController {
+class AdminController {
   async addProduct(req, res) {
     try {
       console.log(req.body);
@@ -34,21 +34,11 @@ class ProductController {
     }
   }
 
-  async topProducts(req, res) {
-    try {
-      const topProducts = await productModel.find({ top: true, active: true });
-      res.json({ products: topProducts });
-    } catch (err) {
-      console.log(err);
-    }
-  }
   async updateProductActive(req, res) {
     try {
       const { id } = req.params;
       const product = await productModel.findById(id);
-      if (!product) {
-        return;
-      }
+
       product.active = !product.active;
       await product.save();
 
@@ -76,4 +66,4 @@ class ProductController {
   }
 }
 
-module.exports = new ProductController();
+module.exports = new AdminController();
