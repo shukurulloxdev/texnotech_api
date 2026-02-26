@@ -1,5 +1,5 @@
 const productModel = require("../models/product-model");
-
+//salom
 class AdminController {
   async addProduct(req, res) {
     try {
