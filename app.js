@@ -11,7 +11,7 @@ app.use(express.json());
 // routers
 app.use("/api", require("./route/index"));
 
-// run posrt
+// run port
 const runServer = async () => {
   try {
     const PORT = process.env.PORT || 8080;

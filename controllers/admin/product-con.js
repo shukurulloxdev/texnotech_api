@@ -3,6 +3,7 @@ const productModel = require("../../models/product-model");
 class ProductController {
   async addProduct(req, res) {
     try {
+      console.log(req.body);
       const product = await productModel.create(req.body);
       return res.status(201).json(product);
     } catch (err) {
@@ -20,6 +21,14 @@ class ProductController {
         success: false,
         message: "Server Error",
       });
+    }
+  }
+  async topProducts(req, res) {
+    try {
+      const topProducts = await productModel.find({ top: true });
+      res.json(topProducts);
+    } catch (err) {
+      console.log(err);
     }
   }
 }
