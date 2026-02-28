@@ -23,10 +23,12 @@ class ProductController {
       });
     }
   }
+
   async topProducts(req, res) {
     try {
       const topProducts = await productModel.find({ top: true });
       res.json(topProducts);
+      console.log(topProducts);
     } catch (err) {
       console.log(err);
     }
