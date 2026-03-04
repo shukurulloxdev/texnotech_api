@@ -1,17 +1,29 @@
+require("dotenv").config();
+
 const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
 
-app.listen(8080, () => {
-  console.log(`🚀 Listening on port http://localhost:${8080}`);
-});
+// middlewares
+app.use(express.json());
 
-// 1- Node.js muhitini yaratish uchun | npm init -y
+// routers
+app.use("/api", require("./route/index"));
 
-// 2- Express bilan ishlash uchun | npm i express
+// run posrt
+const runServer = async () => {
+  try {
+    const PORT = process.env.PORT || 8080;
 
-// 3- Nodemon ni yuklaymiz auto save uchun | npm install -D nodemon |
-//  "scripts": {
-//     "start": "node app.js",
-//     "dev": "nodemon app.js"
-//   }, va (npm run dev)
+    await mongoose.connect(process.env.MONGODB_URL);
+    console.log("✅ Connected to DB");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Listening on port http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+runServer();
