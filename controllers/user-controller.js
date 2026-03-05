@@ -9,23 +9,25 @@ class UserController {
 
       let query = {};
 
-      if (searchQuery) {
+      if (searchQuery.trim()) {
         const escapedSearchQuery = searchQuery.replace(
           /[.*+?^{}()|[\]\\]/g,
           "\\$&",
         );
+
         query.$or = [{ name: { $regex: new RegExp(escapedSearchQuery, "i") } }];
       }
-      if (category) {
-        const escapedSearchQuery = searchQuery.replace(
-          /[.*+?^{}()|[\]\\]/g,
-          "\\$&",
-        );
-        query.$or = [
-          { category: { $regex: new RegExp(escapedSearchQuery, "i") } },
-        ];
+
+      if (category === "top") {
+        query.top = true;
+      } else if (category && category !== "all") {
+        const escapedCategory = category.replace(/[.*+?^{}()|[\]\\]/g, "\\$&");
+
+        query.category = { $regex: new RegExp(escapedCategory, "i") };
       }
+
       let sortOptions = { createdAt: -1 };
+
       if (filter === "newest") {
         sortOptions = { createdAt: -1 };
       } else if (filter === "oldest") {
@@ -40,11 +42,12 @@ class UserController {
 
       const totalProduct = await productModel.countDocuments(query);
 
-      const isNext = totalProduct > skipAmount + +products.length;
+      const isNext = totalProduct > skipAmount + products.length;
 
       return res.json({ products, isNext, totalProduct });
     } catch (err) {
       console.log(err);
+      return res.status(500).json({ message: "Server error" });
     }
   }
   async topProducts(req, res) {
