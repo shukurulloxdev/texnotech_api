@@ -29,7 +29,7 @@ const runServer = async () => {
 runServer();
 
 // git add .
-// GIT_AUTHOR_DATE="2026-01-25T12:00:00" \
-// GIT_COMMITTER_DATE="2026-01-25T12:00:00" \
+// GIT_AUTHOR_DATE="2026-02-26T12:00:00" \
+// GIT_COMMITTER_DATE="2026-02-26T12:00:00" \
 // git commit -m "Admin updated"
 // git push
