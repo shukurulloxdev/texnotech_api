@@ -18,9 +18,11 @@ class UserController {
         query.$or = [{ name: { $regex: new RegExp(escapedSearchQuery, "i") } }];
       }
 
-      if (category === "top") {
+      if (category === "tops") {
         query.top = true;
-      } else if (category && category !== "all") {
+      } else if (category === "discounts") {
+        query.discount = true;
+      } else if (category) {
         const escapedCategory = category.replace(/[.*+?^{}()|[\]\\]/g, "\\$&");
 
         query.category = { $regex: new RegExp(escapedCategory, "i") };
