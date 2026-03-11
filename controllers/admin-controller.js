@@ -1,3 +1,4 @@
+const categoryModel = require("../models/category-model");
 const productModel = require("../models/product-model");
 //salom
 class AdminController {
@@ -5,6 +6,28 @@ class AdminController {
     try {
       console.log(req.body);
       const product = await productModel.create(req.body);
+      return res.status(201).json({ status: 200 });
+    } catch (err) {
+      if (err.name === "ValidationError") {
+        const errors = Object.values(err.errors).map((e) => e.message);
+
+        return res.status(400).json({
+          success: false,
+          type: "ValidationError",
+          errors,
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+  async addCategory(req, res) {
+    try {
+      console.log(req.body);
+      await categoryModel.create(req.body);
       return res.status(201).json({ status: 200 });
     } catch (err) {
       if (err.name === "ValidationError") {
