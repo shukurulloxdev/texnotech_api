@@ -1,4 +1,7 @@
+const categoryModel = require("../models/category-model");
+const orderModel = require("../models/order-model");
 const productModel = require("../models/product-model");
+const jwt = require("jsonwebtoken");
 
 class UserController {
   async getProducts(req, res) {
@@ -52,6 +55,35 @@ class UserController {
       return res.status(500).json({ message: "Server error" });
     }
   }
+  async getCategories(req, res) {
+    try {
+      const categories = await categoryModel.find({ active: true });
+      res.json({ categories });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async getFavorites(req, res) {
+    try {
+      const { ids } = req.body;
+
+      const products = await productModel.find({ _id: { $in: ids } });
+      res.json({ products });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async getBasketProducts(req, res) {
+    try {
+      const { ids } = req.body;
+
+      const products = await productModel.find({ _id: { $in: ids } });
+      res.json({ products });
+    } catch (err) {
+      console.log(err);
+    }
+  }
   async topProducts(req, res) {
     try {
       const topProducts = await productModel.find({ top: true, active: true });
@@ -68,6 +100,54 @@ class UserController {
       const product = await productModel.findById(id);
 
       res.status(200).json({ product });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async newOrders(req, res) {
+    try {
+      const token = req.cookies.token;
+      if (!token) return res.json({ failure: "Token not found" });
+
+      const jwtUser = jwt.verify(token, process.env.JWT_SECRET);
+      if (!jwtUser) return res.json({ failure: "Invalid token" });
+      const orders = await orderModel
+        .find({
+          userId: jwtUser._id,
+          status: { $in: ["new", "process"] },
+        })
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "products.productId",
+          model: productModel,
+          select: "name category images discount percent brand price percent",
+        });
+
+      return res.json({ orders });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async finishedOrders(req, res) {
+    try {
+      const token = req.cookies.token;
+      if (!token) return res.json({ failure: "Token not found" });
+
+      const jwtUser = jwt.verify(token, process.env.JWT_SECRET);
+      if (!jwtUser) return res.json({ failure: "Invalid token" });
+
+      const orders = await orderModel
+        .find({
+          userId: jwtUser._id,
+          status: "finished",
+        })
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "products.productId",
+          model: productModel,
+        });
+
+      return res.json({ orders });
     } catch (err) {
       console.log(err);
     }

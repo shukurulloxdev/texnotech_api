@@ -2,10 +2,19 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const app = express();
 
 // middlewares
+app.use(cookieParser({}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, // ← cookie o'tishi uchun
+  }),
+);
 app.use(express.json());
 
 // routers

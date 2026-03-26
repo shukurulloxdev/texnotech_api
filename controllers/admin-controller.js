@@ -56,6 +56,15 @@ class AdminController {
       console.log(err);
     }
   }
+  async adminCategory(req, res) {
+    try {
+      const adminCategory = await categoryModel.find();
+
+      res.json({ categories: adminCategory });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async updateProductActive(req, res) {
     try {

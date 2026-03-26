@@ -7,6 +7,7 @@ const categorySchema = Schema(
     seoTitle: { type: String, required: true },
     seoDescription: { type: String, required: true },
     active: { type: Boolean, default: true },
+    image: { type: String, required: true },
   },
   { timestamps: true }, // ✅ createdAt, updatedAt avtomatik bo‘ladi);
 );
