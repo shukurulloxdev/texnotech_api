@@ -4,5 +4,6 @@ const router = require("express").Router();
 
 router.post("/create", orderController.createOrder);
 router.get("/admin-orders", orderController.adminOrders);
+router.put("/update-order/:orderId", orderController.adminOrderUpdate);
 
 module.exports = router;

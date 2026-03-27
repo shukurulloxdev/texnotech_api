@@ -27,7 +27,7 @@ class OrderController {
   }
   async adminOrders(req, res) {
     try {
-      const orders = await orderModel.find().sort({ createdAt: -1 }).populate({
+      const orders = await orderModel.find().sort({ updatedAt: -1 }).populate({
         path: "products.productId",
         model: productModel,
       });
@@ -39,14 +39,16 @@ class OrderController {
   }
   async adminOrderUpdate(req, res) {
     try {
-      const orders = await orderModel
-        .findByIdAndUpdate()
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "products.productId",
-          model: productModel,
-        });
-      return res.json({ orders });
+      const { orderId } = req.params;
+      const { status } = req.body;
+
+      const order = await orderModel.findByIdAndUpdate(
+        orderId,
+        { status },
+        { new: true },
+      );
+
+      return res.json({ order });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ failure: "Server error" });
