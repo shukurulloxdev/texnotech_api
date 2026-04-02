@@ -29,8 +29,12 @@ class AuthController {
 
       const token = req.cookies.token;
       if (!token) return res.json({ user: null });
+
       const jwtUser = jwt.verify(token, process.env.JWT_SECRET);
+      if (!jwtUser) return res.json({ user: null });
+
       const user = await userModel.findById(jwtUser._id);
+      if (!user._id) return res.json({ user: null });
 
       return res.json({ user });
     } catch (err) {
