@@ -34,7 +34,7 @@ class AuthController {
       if (!jwtUser) return res.json({ user: null });
 
       const user = await userModel.findById(jwtUser._id);
-      if (!user._id) return res.json({ user: null });
+      if (!user) return res.json({ user: null });
 
       return res.json({ user });
     } catch (err) {

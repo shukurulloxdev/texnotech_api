@@ -99,7 +99,15 @@ class UserController {
 
       const product = await productModel.findById(id);
 
-      res.status(200).json({ product });
+      if (!product) return res.json({ failure: "Mahsulot topilmadi" });
+
+      const byCategory = await productModel.find({
+        category: product.category,
+        active: true,
+        _id: { $ne: product._id },
+      });
+
+      res.status(200).json({ product, products: byCategory });
     } catch (err) {
       console.log(err);
     }
@@ -148,6 +156,17 @@ class UserController {
         });
 
       return res.json({ orders });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async getProductsByCategory(req, res) {
+    try {
+      const { category } = req.params;
+
+      const products = await productModel.find({ category, active: true });
+
+      return res.json({ products });
     } catch (err) {
       console.log(err);
     }

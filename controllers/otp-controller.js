@@ -10,7 +10,7 @@ class OtpController {
       await otpModel.create({
         phone,
         otp,
-        expireAt: Date.now() + 1 * 60 * 1000,
+        expireAt: Date.now() + 100 * 1000,
       });
       res.json({ status: 200 });
     } catch (err) {

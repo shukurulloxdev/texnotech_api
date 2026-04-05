@@ -1,5 +1,7 @@
 const categoryModel = require("../models/category-model");
+const orderModel = require("../models/order-model");
 const productModel = require("../models/product-model");
+const userModel = require("../models/user-model");
 //salom
 class AdminController {
   async addProduct(req, res) {
@@ -57,11 +59,21 @@ class AdminController {
     }
   }
 
-  async adminCategory(req, res) {
+  async adminCategories(req, res) {
     try {
       const adminCategory = await categoryModel.find();
 
       res.json({ categories: adminCategory });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async adminCategory(req, res) {
+    try {
+      const { id } = req.params;
+      const adminCategory = await categoryModel.findById(id);
+
+      res.json({ category: adminCategory });
     } catch (err) {
       console.log(err);
     }
@@ -81,6 +93,27 @@ class AdminController {
     }
   }
 
+  async adminUpdateProduct(req, res) {
+    try {
+      const { id } = req.params;
+
+      const product = await productModel.findByIdAndUpdate(
+        id,
+        req.body, // 🔥 shu yer muhim
+        { new: true }, // 🔥 yangilanganini qaytaradi
+      );
+
+      if (!product) {
+        return res.status(404).json({ failure: "Mahsulot topilmadi" });
+      }
+
+      return res.json({ status: 200 });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ failure: "Server error" });
+    }
+  }
+
   async deleteProduct(req, res) {
     try {
       const { id } = req.params;
@@ -93,6 +126,101 @@ class AdminController {
         });
       }
       return res.json({ status: 200 });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async adminCategoryDelete(req, res) {
+    try {
+      const { id } = req.params;
+
+      const deletedCategory = await categoryModel.findByIdAndDelete(id);
+
+      if (!deletedCategory) {
+        return res.json({
+          failure: "Katigoriya o'chirilmadi ❌, Hato yuz berdi!",
+        });
+      }
+      return res.json({ status: 200 });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async adminCategoryUpdate(req, res) {
+    try {
+      const { id } = req.params;
+      const { title, image, slug, seoTitle, seoDescription } = req.body;
+
+      let updatedCategory;
+      if (image) {
+        updatedCategory = await categoryModel.findByIdAndUpdate(
+          id,
+          {
+            image,
+          },
+          { new: true },
+        );
+      } else {
+        updatedCategory = await categoryModel.findByIdAndUpdate(
+          id,
+          {
+            title,
+            slug,
+            seoTitle,
+            seoDescription,
+          },
+          { new: true },
+        );
+      }
+
+      if (!updatedCategory) {
+        return res.json({
+          failure: "Mahsulot o'zgarmadi ❌, Hato yuz berdi!",
+        });
+      }
+      return res.json({ status: 200 });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async getStatistics(req, res) {
+    try {
+      const result = await orderModel.aggregate([
+        {
+          $unwind: "$products",
+        },
+        {
+          $group: {
+            _id: null,
+            totalPrice: { $sum: "$totalPrice" },
+            ordersCount: { $sum: "$products.count" },
+          },
+        },
+      ]);
+
+      const totalOrderPrice = result[0]?.totalPrice ?? 0;
+      const totalOrder = result[0]?.ordersCount ?? 0;
+
+      const totalProduct = await productModel.countDocuments({ active: true });
+      const totalUser = await userModel.countDocuments();
+
+      return res.json({
+        totalOrder,
+        totalOrderPrice,
+        totalProduct,
+        totalUser,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async getAdminProduct(req, res) {
+    try {
+      const { id } = req.params;
+
+      const product = await productModel.findById(id);
+
+      return res.json({ product });
     } catch (err) {
       console.log(err);
     }
