@@ -97,11 +97,9 @@ class AdminController {
     try {
       const { id } = req.params;
 
-      const product = await productModel.findByIdAndUpdate(
-        id,
-        req.body, // 🔥 shu yer muhim
-        { new: true }, // 🔥 yangilanganini qaytaradi
-      );
+      const product = await productModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
 
       if (!product) {
         return res.status(404).json({ failure: "Mahsulot topilmadi" });
@@ -113,7 +111,6 @@ class AdminController {
       return res.status(500).json({ failure: "Server error" });
     }
   }
-
   async deleteProduct(req, res) {
     try {
       const { id } = req.params;
