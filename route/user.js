@@ -3,6 +3,7 @@ const userController = require("../controllers/user-controller");
 const router = require("express").Router();
 
 router.get("/products", userController.getProducts);
+router.get("/all-products", userController.getAllProducts);
 
 router.get("/categories", userController.getCategories);
 router.get("/by-category/:category", userController.getProductsByCategory);

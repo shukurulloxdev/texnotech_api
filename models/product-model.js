@@ -6,6 +6,8 @@ const productSchema = new Schema(
     category: { type: String, required: true },
     description: { type: String, required: true },
     brand: { type: String, required: true },
+    count: { type: String },
+    kafolat: { type: String },
     price: { type: Number, required: true },
     top: { type: Boolean },
     discount: { type: Boolean },

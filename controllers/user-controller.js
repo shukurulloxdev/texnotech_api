@@ -55,6 +55,29 @@ class UserController {
       return res.status(500).json({ message: "Server error" });
     }
   }
+
+  async getAllProducts(req, res) {
+    try {
+      const { searchQuery } = req.query;
+
+      let query = {};
+      if (searchQuery && searchQuery.trim()) {
+        const escapedSearchQuery = searchQuery.replace(
+          /[.*+?^{}()|[\]\\]/g,
+          "\\$&",
+        );
+
+        query.$or = [{ name: { $regex: new RegExp(escapedSearchQuery, "i") } }];
+      }
+
+      const products = await productModel.find({ ...query, active: true });
+
+      return res.json({ products });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Server error" });
+    }
+  }
   async getCategories(req, res) {
     try {
       const categories = await categoryModel.find({ active: true });
