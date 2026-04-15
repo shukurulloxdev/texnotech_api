@@ -12,6 +12,7 @@ router.post("/favorites", userController.getFavorites);
 router.post("/basket-products", userController.getBasketProducts);
 
 router.get("/top-products", userController.topProducts);
+router.get("/discount-products", userController.discountProducts);
 router.get("/product/:id", userController.getProduct);
 router.get("/new-orders", userController.newOrders);
 router.get("/finished-orders", userController.finishedOrders);

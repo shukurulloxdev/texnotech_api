@@ -11,8 +11,8 @@ const app = express();
 app.use(cookieParser({}));
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    credentials: true, // ← cookie o'tishi uchun
+    origin: ["http://localhost:3000", "https://macline.vercel.app"],
+    credentials: true,
   }),
 );
 app.use(express.json());

@@ -80,6 +80,7 @@ class UserController {
   }
   async getCategories(req, res) {
     try {
+      console.log(req);
       const categories = await categoryModel.find({ active: true });
       res.json({ categories });
     } catch (err) {
@@ -109,8 +110,20 @@ class UserController {
   }
   async topProducts(req, res) {
     try {
-      const topProducts = await productModel.find({ top: true, active: true });
+      const topProducts = await productModel
+        .find({ top: true, active: true })
+        .sort({ createdAt: -1 });
       res.json({ products: topProducts });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async discountProducts(req, res) {
+    try {
+      const discountProducts = await productModel
+        .find({ discount: true, active: true })
+        .sort({ createdAt: -1 });
+      res.json({ products: discountProducts });
     } catch (err) {
       console.log(err);
     }
